@@ -1,11 +1,20 @@
 const express = require('express');
+const dotenv = require('dotenv');
+const { connectToServer } = require('./db/conn');
+
+dotenv.config();
+
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.get('/', (req, res) => {
-  res.send('Hello World');
-});
+app.use(express.json());
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+// rotas
+app.use('/contacts', require('./routes/contacts'));
+
+// iniciar servidor após conexão com o banco
+connectToServer().then(() => {
+  app.listen(port, () => {
+    console.log(`🚀 Server running on port ${port}`);
+  });
 });
